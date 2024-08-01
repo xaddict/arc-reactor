@@ -1,0 +1,19 @@
+{
+  "name": "vite-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.3.4"
+  },
+  "dependencies": {
+    "@jscad/regl-renderer": "^2.6.9",
+    "@jscad/web": "^2.6.7",
+    "gl": "^8.0.2"
+  }
+}
