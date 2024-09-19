@@ -145,7 +145,7 @@ const params = {
 	},
 	LAYER_TWO: {
 		INNER_DIAMETER: 32, // 40 for round screen
-		HEIGHT: 7
+		HEIGHT: 3
 	},
 	LAYER_THREE: {
 		INNER_DIAMETER: 46,
@@ -153,7 +153,7 @@ const params = {
 	},
 	LAYER_FOUR: {
 		INNER_DIAMETER: 68,
-		HEIGHT: 8
+		HEIGHT: 12
 	},
 	LAYER_FIVE: {
 		INNER_DIAMETER: 80,
@@ -344,14 +344,11 @@ const layerThree = colorize(
 )
 
 
-const layerFour = colorize(
-	[ 0, 1, 0 ],
-	translateZ(
-		params.LAYER_ONE.HEIGHT + params.LAYER_TWO.HEIGHT + params.LAYER_THREE.HEIGHT,
-		extrudeLinear(
-			{ height: params.LAYER_FOUR.HEIGHT },
-			openRing(params.OUTER_DIAMETER, params.LAYER_FOUR.INNER_DIAMETER)
-		)
+const layerFour = translateZ(
+	params.LAYER_ONE.HEIGHT + params.LAYER_TWO.HEIGHT + params.LAYER_THREE.HEIGHT,
+	extrudeLinear(
+		{ height: params.LAYER_FOUR.HEIGHT },
+		openRing(params.OUTER_DIAMETER, params.LAYER_FOUR.INNER_DIAMETER)
 	)
 )
 
@@ -729,6 +726,7 @@ const roundScreen = colorize([ 1, 0, 0 ], translateZ(
 ))
 
 const cableWidth = 11
+const cableHeight = 8
 const cableGap = colorize(
 	[ 1, 1, 0 ],
 	translateZ(
@@ -736,7 +734,7 @@ const cableGap = colorize(
 		translateY(
 			-30,
 			extrudeLinear(
-				{ height: params.LAYER_TWO.HEIGHT },
+				{ height: cableHeight },
 				rectangle({ size: [ cableWidth, 60 ] })
 			)
 		)
@@ -809,10 +807,6 @@ function magnetCross() {
 
 const CLIP_FOOT_SIZE = [ 14, 10 ]
 const CLIP_FOOT_HEIGHT = 1
-const CLIP_STEM_SIZE = [ 3, 10 ]
-const CLIP_STEM_HEIGHT = 19
-const CLIP_HEAD_SIZE = [ 14, 10 ]
-const CLIP_HEAD_HEIGHT = 1
 const CLIP_RADIUS = 1
 
 function clip() {
@@ -822,6 +816,12 @@ function clip() {
 		translate([ 0, 0, 21.4 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
 		translate([ 0, -2, 21.4 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
 		translate([ 0, -4, 21.4 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
+
+		translate([ 0, 4, 0 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
+		translate([ 0, 2, 0 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
+		translate([ 0, 0, 0 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
+		translate([ 0, -2, 0 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
+		translate([ 0, -4, 0 ], rotate([ degToRad(90), 0, degToRad(90) ], roundedCylinder({ radius: 1, height: 14, roundRadius: 1 }))),
 
 		translate([ -1.5, 0, 20.4 ], rotateX(degToRad(90), roundedCylinder({ radius: 0.9, height: 6, roundRadius: 0.9 }))),
 		subtract(
@@ -873,35 +873,37 @@ function clipGaps() {
 }
 
 export default [
-	// trinket,
+	trinket,
 	// roundScreen,
-	// ring,
-	// ringTwo,
+	ring,
+	ringTwo,
 	// fakeEmblem,
 	// pills,
 
-	// union(
-	// 	subtract(layerOne, clipGaps()),
-	// 	layerFour,
-	// 	layerFourWall(),
-	// 	colorize([ 1, 0, 0, 1 ], subtract(layerFive, pills())),
-	// 	colorize([ 0, 0, 1, 1 ], translateZ(params.LAYER_ONE.HEIGHT + params.LAYER_TWO.HEIGHT + params.LAYER_THREE.HEIGHT + params.LAYER_FOUR.HEIGHT, pegs)),
-	// 	colorize(
-	// 		[ 0, 0, 1, 1 ],
-	// 		subtract(
-	// 			layerThree,
-	// 			cableGap,
-	// 			magnetHoles(),
-	// 			clipGaps()
-	// 		)
-	// 	),
-	// 	struts(),
-	// ),
+	union(
+		subtract(layerOne, clipGaps()),
+		colorize([ 0, 1, 0 ], subtract(layerFour, cableGap)),
+		layerFourWall(),
+		colorize([ 1, 0, 0, 1 ], subtract(layerFive, pills())),
+		colorize([ 0, 0, 1, 1 ], translateZ(params.LAYER_ONE.HEIGHT + params.LAYER_TWO.HEIGHT + params.LAYER_THREE.HEIGHT + params.LAYER_FOUR.HEIGHT, pegs)),
+		colorize(
+			[ 0, 0, 1, 1 ],
+			subtract(
+				layerThree,
+				cableGap,
+				magnetHoles(),
+				clipGaps()
+			)
+		),
+		struts(),
+	),
 
-	// clips(),
+	// extrudeLinear({ height: 20 }, rectangle({ size: [ 40, 40 ] })),
 
-	innerGlass(),
+	clips(),
 
+	// innerGlass(),
+	//
 	// layerTwoCableGutter,
 	// cutterCube
 	// ),
